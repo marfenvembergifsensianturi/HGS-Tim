@@ -3,20 +3,29 @@ import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import FleetSection from "@/components/FleetSection";
 import { useState, useEffect } from "react";
+import CountUp from 'react-countup';
+import { useInView } from 'react-intersection-observer'; 
 
 export default function Home() {
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const callEmergency = () => {
-  const phoneNumber = "6282124195359";
-  const message = "*URGENT:* Saya butuh bantuan pengiriman segera!";
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  if (isMobile) {
-    window.open(`tel:${phoneNumber}`, "_self");
-  } else {
-    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
-  }
-};
+  // Hook untuk mendeteksi scroll pada bagian Counter agar animasi angka berjalan
+  const { ref: counterRef, inView: counterInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.2, // Animasi mulai saat 20% bagian terlihat
+  });
+
+  const callEmergency = () => {
+    const phoneNumber = "6282124195359";
+    const message = "*URGENT:* Saya butuh bantuan pengiriman segera!";
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      window.open(`tel:${phoneNumber}`, "_self");
+    } else {
+      window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,19 +64,19 @@ export default function Home() {
     <main className="min-h-screen flex flex-col font-poppins">
       <Navbar />
 
-      {/* HERO SECTION */}
-      <section id="beranda" className="hero-bg text-white flex-grow flex items-center relative overflow-hidden min-h-[70vh]">
+      {/* HERO SECTION - Diperbaiki agar tidak terlalu tinggi di mobile */}
+      <section id="beranda" className="hero-bg text-white flex items-center relative overflow-hidden min-h-[60vh] md:min-h-[70vh]">
         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none">
           <div className="w-64 h-64 rounded-full bg-hg-red opacity-10 filter blur-3xl"></div>
           <div className="w-96 h-96 rounded-full bg-hg-blue opacity-10 filter blur-3xl ml-64"></div>
         </div>
-        <div className="container mx-auto text-center px-4 py-20 relative z-10">
-          <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-sm p-8 rounded-xl border border-white/20 transform transition-all duration-500 hover:scale-105">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+        <div className="container mx-auto text-center px-4 py-12 md:py-20 relative z-10">
+          <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-sm p-6 md:p-8 rounded-xl border border-white/20 transform transition-all duration-500 hover:scale-105">
+            <h1 className="text-3xl md:text-5xl font-bold mb-4 text-white">
               <span className="text-hg-red italic">Solution</span> 
               <span className="text-hg-blue"> Transportation</span> and Trucking
             </h1>
-            <p className="text-xl md:text-2xl mb-8">Semoga Kami Dapat Menjadi Mitra Perjalanan Pengiriman Anda</p>
+            <p className="text-lg md:text-2xl mb-8">Semoga Kami Dapat Menjadi Mitra Perjalanan Pengiriman Anda</p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <button onClick={openWhatsApp} className="bg-hg-red hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg flex items-center justify-center gap-2 transition">
                 <i className="fab fa-whatsapp"></i> Pesan Sekarang
@@ -110,13 +119,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TENTANG KAMI */}
+      {/* TENTANG KAMI - Diperbaiki Jarak Kosong di Mobile */}
       <section id="tentang" className="py-16 bg-gray-50">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col lg:flex-row items-center gap-12">
-            <div className="lg:w-1/2">
-              <div className="relative rounded-xl overflow-hidden shadow-2xl animate-float h-[400px] w-full">
-                <Image src="/images/Truk3.png" alt="Truk HGS" fill className="object-cover" />
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+            <div className="w-full lg:w-1/2">
+              <div className="relative rounded-xl overflow-hidden shadow-2xl animate-float h-[250px] md:h-[350px] lg:h-[400px] w-full">
+                <Image src="/images/Truk3.png" alt="Truk HGS" fill className="object-cover" priority />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 p-6 text-white">
                   <h3 className="text-2xl font-bold">HGS</h3>
@@ -124,23 +133,29 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="lg:w-1/2">
-              <h2 className="text-3xl font-bold mb-6 text-hg-dark">Tentang Kami</h2>
-              <div className="space-y-6 text-gray-700">
-                <p className="text-lg leading-relaxed">
+            <div className="w-full lg:w-1/2">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-hg-dark">Tentang Kami</h2>
+              <div className="space-y-4 md:space-y-6 text-gray-700">
+                <p className="text-base md:text-lg leading-relaxed">
                   <span className="font-bold text-hg-red">PT. HEMA GLORI SEJAHTERA</span> merupakan perusahaan yang bergerak melayani Jasa Pengiriman atau Pengangkutan dan Rental Kendaraan yang berlokasi di Cikarang dan telah memiliki perijinan transportasi pengiriman barang yang sah.
                 </p>
-                <p className="leading-relaxed">Dengan armada modern dan tim profesional, kami menyediakan solusi lengkap untuk kebutuhan transportasi darat.</p>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white p-6 rounded-lg shadow text-center card-hover">
-                    <div className="text-hg-red text-4xl font-bold mb-2">10+</div>
-                    <p className="text-sm font-medium">Armada Truk</p>
-                    <p className="text-xs text-gray-500 mt-1">Terawat dan Modern</p>
+                <p className="text-sm md:text-base leading-relaxed">Dengan armada modern dan tim profesional, kami menyediakan solusi lengkap untuk kebutuhan transportasi darat.</p>
+                
+                {/* Bagian Counter dengan Animasi Angka Berjalan */}
+                <div ref={counterRef} className="grid grid-cols-2 gap-4 mt-6">
+                  <div className="bg-white p-4 md:p-6 rounded-lg shadow text-center card-hover border border-gray-100">
+                    <div className="text-hg-red text-3xl md:text-4xl font-bold mb-1 md:mb-2">
+                      {counterInView ? <CountUp end={10} duration={3} /> : "0"}+
+                    </div>
+                    <p className="text-xs md:text-sm font-medium">Armada Truk</p>
+                    <p className="text-[10px] md:text-xs text-gray-500 mt-1">Terawat dan Modern</p>
                   </div>
-                  <div className="bg-white p-6 rounded-lg shadow text-center card-hover">
-                    <div className="text-hg-blue text-4xl font-bold mb-2">24/7</div>
-                    <p className="text-sm font-medium">Layanan</p>
-                    <p className="text-xs text-gray-500 mt-1">Siap Membantu</p>
+                  <div className="bg-white p-4 md:p-6 rounded-lg shadow text-center card-hover border border-gray-100">
+                    <div className="text-hg-blue text-3xl md:text-4xl font-bold mb-1 md:mb-2">
+                      {counterInView ? <CountUp end={24} duration={3} /> : "0"}/7
+                    </div>
+                    <p className="text-xs md:text-sm font-medium">Layanan</p>
+                    <p className="text-[10px] md:text-xs text-gray-500 mt-1">Siap Membantu</p>
                   </div>
                 </div>
               </div>
@@ -260,18 +275,11 @@ export default function Home() {
         </div>
       </footer>
 
-      {showBackToTop && (
-        <button onClick={scrollToTop} className="fixed bottom-8 right-8 bg-hg-red hover:bg-red-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all z-50">
-          <i className="fas fa-arrow-up"></i>
-        </button>
-      )}
-      {/* Tombol Urgent Delivery - Floating */}
+      {/* TOMBOL FLOATING (Urgent & Back to Top) */}
       <div className="fixed bottom-24 right-8 z-[60] flex flex-col items-end gap-3 group">
-        {/* Label Pop-up (Tooltip) */}
         <span className="bg-red-600 text-white px-3 py-1 rounded shadow-lg text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
           Respon Cepat (WA/Telp)
         </span>
-        
         <button 
           onClick={callEmergency}
           className="bg-yellow-500 hover:bg-yellow-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 relative"
@@ -282,11 +290,11 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Button Back to Top yang sudah ada */}
       {showBackToTop && (
-        <button onClick={scrollToTop} className="fixed bottom-8 right-8 ...">
-           <i className="fas fa-arrow-up"></i>
+        <button onClick={scrollToTop} className="fixed bottom-8 right-8 bg-hg-red hover:bg-red-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all z-50">
+          <i className="fas fa-arrow-up"></i>
         </button>
-      )}   </main>
+      )}
+    </main>
   );
 }
